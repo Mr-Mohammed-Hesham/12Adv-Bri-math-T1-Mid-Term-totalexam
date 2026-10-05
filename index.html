@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📐 امتحان المراجعة الشامل - رياضيات الصف 12 المتقدم</title>
+<meta name="description" content="امتحان مراجعة شامل يغطي جميع مواضيع رياضيات الصف 12 المتقدم - 50 سؤالاً">
+<meta name="author" content="Mr. Mohammed Hesham">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Cairo', sans-serif; }
+body.en-mode { font-family: 'Inter', sans-serif; }
+.correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+.incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+.timer-warning { color: #dc2626 !important; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.7; } }
+@media print { .no-print { display: none !important; } }
+.success-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.875rem; }
+.grade-excellent { background: #dcfce7; color: #166534; }
+.grade-good { background: #fef3c7; color: #92400e; }
+.grade-pass { background: #dbeafe; color: #1e40af; }
+.grade-fail { background: #fee2e2; color: #991b1b; }
+.lang-switch {
+position: fixed; top: 16px; left: 16px; z-index: 100;
+background: white; padding: 6px; border-radius: 30px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; gap: 4px;
+border: 2px solid #7c3aed;
+}
+[dir="ltr"] .lang-switch { left: auto; right: 16px; }
+.lang-btn {
+padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold;
+transition: all 0.3s; border: none; font-size: 0.875rem;
+background: transparent; color: #6b7280;
+}
+.lang-btn.active { background: #7c3aed; color: white; box-shadow: 0 2px 6px rgba(124,58,237,0.4); }
+.lang-btn:hover:not(.active) { background: #f5f3ff; color: #7c3aed; }
+.shuffle-badge {
+display: inline-block;
+background: linear-gradient(135deg, #7c3aed, #6d28d9);
+color: white;
+padding: 4px 12px;
+border-radius: 20px;
+font-size: 0.75rem;
+font-weight: bold;
+margin-right: 8px;
+animation: pulse 2s infinite;
+}
+.math-display {
+display: inline-block;
+direction: ltr;
+font-family: 'Times New Roman', 'Cambria Math', serif;
+font-size: 1.2em;
+font-style: italic;
+padding: 2px 8px;
+background: #f5f3ff;
+border-radius: 6px;
+margin: 2px;
+color: #5b21b6;
+font-weight: 600;
+letter-spacing: 0.5px;
+}
+.save-indicator {
+position: fixed; bottom: 20px; left: 20px; z-index: 200;
+background: #10b981; color: white; padding: 8px 16px;
+border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+opacity: 0; transition: opacity 0.3s; pointer-events: none;
+box-shadow: 0 4px 12px rgba(16,185,129,0.4);
+}
+.save-indicator.show { opacity: 1; }
+.svg-graph {
+display: block;
+margin: 12px auto;
+background: white;
+border: 2px solid #e5e7eb;
+border-radius: 12px;
+padding: 8px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.graph-container { text-align: center; margin: 10px 0; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-violet-50 to-purple-50 text-gray-800 p-4 md:p-8 min-h-screen">
+<div class="lang-switch no-print">
+<button class="lang-btn active" onclick="setLanguage('ar')" id="btn-ar">عربي</button>
+<button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+</div>
+<div id="saveIndicator" class="save-indicator">💾 <span data-ar="تم الحفظ" data-en="Saved">تم الحفظ</span></div>
+<div id="timer-container" class="max-w-4xl mx-auto mb-4 text-center no-print">
+<div class="bg-white p-4 rounded-2xl shadow-md inline-block border-2 border-violet-100">
+<span class="text-gray-600 ml-2" data-ar="⏰ الوقت المتبقي:" data-en="⏰ Time Remaining:">⏰ الوقت المتبقي:</span>
+<span id="timer" class="text-2xl font-bold text-violet-600 font-mono">90:00</span>
+<span class="shuffle-badge" data-ar="🎲 أسئلة عشوائية" data-en="🎲 Random Questions">🎲 أسئلة عشوائية</span>
+</div>
+</div>
+<div class="max-w-4xl mx-auto mb-6 flex flex-wrap gap-3 justify-center no-print">
+<button onclick="toggleAnswers()" class="bg-violet-600 hover:bg-violet-700 text-white px-5 py-2 rounded-xl font-medium transition shadow cursor-pointer" data-ar="👀 إظهار / إخفاء الإجابات" data-en="👀 Show / Hide Answers">👀 إظهار / إخفاء الإجابات</button>
+<button onclick="window.print()" class="bg-gray-700 hover:bg-gray-900 text-white px-5 py-2 rounded-xl font-medium transition shadow cursor-pointer" data-ar="🖨️ طباعة" data-en="🖨️ Print">🖨️ طباعة</button>
+<button onclick="reshuffleExam()" class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-5 py-2 rounded-xl font-medium transition shadow cursor-pointer" data-ar="🔄 أسئلة جديدة" data-en="🔄 New Questions">🔄 أسئلة جديدة</button>
+<button onclick="clearProgress()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-medium transition shadow cursor-pointer" data-ar="🗑️ مسح التقدم" data-en="🗑️ Clear Progress">🗑️ مسح التقدم</button>
+</div>
+<header class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-lg mb-8 border-4 border-violet-400">
+<div class="text-center">
+<h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2" data-ar="📐 امتحان المراجعة الشامل" data-en="📐 Comprehensive Review Exam">📐 امتحان المراجعة الشامل</h1>
+<h2 class="text-lg text-violet-600 font-semibold" data-ar="الصف الثاني عشر - متقدم (رياضيات)" data-en="Grade 12 - Advanced (Mathematics)">الصف الثاني عشر - متقدم (رياضيات)</h2>
+<p class="text-sm text-gray-600 mt-2" data-ar="يشمل: النهايات، الاشتقاق، التكامل، والتطبيقات المتقدمة" data-en="Covers: Limits, Derivatives, Integration, and Advanced Applications">يشمل: النهايات، الاشتقاق، التكامل، والتطبيقات المتقدمة</p>
+<p class="text-xs text-green-600 mt-2 font-semibold" data-ar="💾 يتم حفظ تقدمك تلقائياً - 50 سؤالاً في 10 أقسام" data-en="💾 Your progress is saved automatically - 50 questions in 10 sections">💾 يتم حفظ تقدمك تلقائياً - 50 سؤالاً في 10 أقسام</p>
+</div>
+<div class="mt-4 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+<span><span data-ar="📅 التاريخ:" data-en="📅 Date:">📅 التاريخ:</span> <input type="text" id="examDate" class="border-b-2 border-violet-300 bg-transparent w-28 text-center"></span>
+<span><span data-ar="😊 الاسم:" data-en="😊 Name:">😊 الاسم:</span> <input type="text" id="studentName" class="border-b-2 border-violet-300 bg-transparent w-32 text-center" placeholder="اكتب اسمك"></span>
+<span><span data-ar="🏫 الشعبة:" data-en="🏫 Class:">🏫 الشعبة:</span> <input type="text" id="studentClass" class="border-b-2 border-violet-300 bg-transparent w-28 text-center" placeholder="الشعبة"></span>
+<span><span data-ar="⏰ المدة: 90 دقيقة" data-en="⏰ Duration: 90 min">⏰ المدة: 90 دقيقة</span></span>
+<span><span data-ar="📊 المجموع: 100 درجة" data-en="📊 Total: 100 pts">📊 المجموع: 100 درجة</span></span>
+</div>
+</header>
+<main class="max-w-4xl mx-auto space-y-8" id="exam-content"></main>
+<div class="text-center no-print pb-8 mt-8">
+<button onclick="gradeExam()" class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-lg px-10 py-4 rounded-2xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="🎯 صحح إجاباتي!" data-en="🎯 Grade My Answers!">🎯 صحح إجاباتي!</button>
+</div>
+<div id="results-panel" class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-2xl border-4 border-violet-400 hidden no-print">
+<h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-ar="🏆 نتيجتك يا بطل! 🏆" data-en="🏆 Your Results, Champion! 🏆">🏆 نتيجتك يا بطل! 🏆</h2>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+<div class="bg-violet-50 p-4 rounded-xl text-center"><p data-ar="😊 الاسم" data-en="😊 Name">😊 الاسم</p><p id="res-name" class="font-bold text-xl text-violet-700">-</p></div>
+<div class="bg-purple-50 p-4 rounded-xl text-center"><p data-ar="📅 التاريخ" data-en="📅 Date">📅 التاريخ</p><p id="res-date" class="font-bold text-xl text-purple-700">-</p></div>
+<div class="bg-violet-50 p-4 rounded-xl text-center"><p data-ar="🌟 المجموع" data-en="🌟 Score">🌟 المجموع</p><p id="res-total" class="font-bold text-3xl text-violet-600">0 / 100</p></div>
+</div>
+<div class="text-center mb-6">
+<span id="success-badge" class="success-badge grade-excellent">-</span>
+<p id="success-percent" class="text-4xl font-bold text-violet-600 mt-2">0%</p>
+<p class="text-sm text-gray-500" data-ar="نسبة النجاح" data-en="Success Rate">نسبة النجاح</p>
+</div>
+<div class="bg-gray-50 p-6 rounded-xl mb-6">
+<h3 class="font-bold text-lg mb-4 text-gray-800" data-ar="📊 أدائك في كل قسم:" data-en="📊 Your Performance:">📊 أدائك في كل قسم:</h3>
+<div class="space-y-3" id="sections-performance"></div>
+</div>
+<div class="text-center mb-6">
+<button id="sendEmailBtn" onclick="sendResultsToEmail()" class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-lg px-8 py-3 rounded-2xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="📧 أرسل النتيجة للمعلم" data-en="📧 Send Results to Teacher">📧 أرسل النتيجة للمعلم</button>
+<p id="emailStatus" class="text-sm mt-2 text-center font-medium"></p>
+</div>
+<div class="flex gap-3 justify-center">
+<button onclick="window.print()" class="bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold" data-ar="🖨️ طباعة النتيجة" data-en="🖨️ Print Results">🖨️ طباعة النتيجة</button>
+</div>
+</div>
+<footer class="max-w-4xl mx-auto mt-10 mb-8 text-center text-gray-500 text-sm no-print">
+© <span data-ar="امتحان المراجعة الشامل - الصف 12 متقدم" data-en="Comprehensive Review - Grade 12 Advanced">امتحان المراجعة الشامل - الصف 12 متقدم</span> | Mr. Mohammed Hesham 📐
+</footer>
+<script>
+const PUBLIC_KEY = "Rb3Lq8tXaFmc5YHUH";
+const SERVICE_ID = "service_w15m64i";
+const TEMPLATE_ID = "template_5b0u2tq";
+const TARGET_EMAIL = "mohammedhesham872@gmail.com";
+emailjs.init(PUBLIC_KEY);
+
+const STORAGE_KEY = 'comprehensive_review_grade12_advanced_math_v1';
+const TOTAL_TIME = 5400;
+const TOTAL_QUESTIONS = 50;
+const TOTAL_SECTIONS = 10;
+const QUESTIONS_PER_SECTION = 5;
+
+let currentSeed = null;
+let answersVisible = false;
+let saveIndicatorTimeout = null;
+
+function mulberry32(a) {
+return function() {
+var t = a += 0x6D2B79F5;
+t = Math.imul(t ^ t >>> 15, t | 1);
+t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+return ((t ^ t >>> 14) >>> 0) / 4294967296;
+}
+}
+
+let rng = null;
+
+function showSaveIndicator() {
+const indicator = document.getElementById('saveIndicator');
+indicator.classList.add('show');
+if (saveIndicatorTimeout) clearTimeout(saveIndicatorTimeout);
+saveIndicatorTimeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+}
+
+function saveState(showIndicator = true) {
+try {
+const state = {
+seed: currentSeed,
+lang: currentLang,
+studentName: document.getElementById('studentName').value,
+studentClass: document.getElementById('studentClass').value,
+examDate: document.getElementById('examDate').value,
+answers: getSelectedAnswers(),
+timeRemaining: timeRemaining,
+answersVisible: answersVisible,
+savedAt: Date.now()
+};
+localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+if (showIndicator) showSaveIndicator();
+} catch (e) { console.error('خطأ في الحفظ:', e); }
+}
+
+function loadState() {
+try {
+const saved = localStorage.getItem(STORAGE_KEY);
+if (saved) return JSON.parse(saved);
+} catch (e) { console.error('خطأ في التحميل:', e); }
+return null;
+}
+
+function getSelectedAnswers() {
+const answers = {};
+for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+const selected = document.querySelector(`input[name="q${i}"]:checked`);
+if (selected) answers[i] = selected.value;
+}
+return answers;
+}
+
+function restoreAnswers(answers) {
+if (!answers) return;
+for (const [idx, val] of Object.entries(answers)) {
+const radio = document.querySelector(`input[name="q${idx}"][value="${val}"]`);
+if (radio) radio.checked = true;
+}
+}
+
+function clearProgress() {
+const confirmMsg = currentLang === 'ar'
+? '⚠️ هل أنت متأكد من مسح كل التقدم؟'
+: '⚠️ Are you sure you want to clear all progress?';
+if (confirm(confirmMsg)) {
+localStorage.removeItem(STORAGE_KEY);
+location.reload();
+}
+}
+
+function setupAnswerListeners() {
+document.getElementById('exam-content').addEventListener('change', (e) => {
+if (e.target.type === 'radio') saveState();
+});
+}
+
+function setupInputListeners() {
+['studentName', 'studentClass', 'examDate'].forEach(id => {
+const el = document.getElementById(id);
+if (el) {
+el.addEventListener('input', () => saveState(false));
+el.addEventListener('blur', () => saveState());
+}
+});
+}
+
+const svgGraphs = {
+quadratic_tangent: `<svg class="svg-graph" width="340" height="280" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+<rect x="5" y="5" width="330" height="270" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="170" y="25" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold">📐 ميل المماس لـ y = x² + 1</text>
+<line x1="40" y1="240" x2="320" y2="240" stroke="#374151" stroke-width="2"/>
+<line x1="40" y1="240" x2="40" y2="40" stroke="#374151" stroke-width="2"/>
+<path d="M 40 200 Q 100 160 160 120 Q 220 80 280 40" fill="none" stroke="#0891b2" stroke-width="3"/>
+<circle cx="160" cy="120" r="5" fill="#dc2626"/>
+<text x="168" y="115" font-size="11" fill="#dc2626" font-weight="bold">(1,2)</text>
+<line x1="100" y1="160" x2="220" y2="80" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5,3"/>
+<text x="170" y="265" text-anchor="middle" font-size="11" fill="#9a3412">الميل عند x=1 هو 2</text>
+</svg>`,
+limit_graph_1: `<svg class="svg-graph" width="340" height="280" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+<rect x="5" y="5" width="330" height="270" rx="12" fill="#f0f9ff" stroke="#0369a1" stroke-width="2"/>
+<text x="170" y="25" text-anchor="middle" font-size="14" fill="#075985" font-weight="bold"> lim(x→1) (x²-1)/(x-1)</text>
+<line x1="30" y1="240" x2="320" y2="240" stroke="#374151" stroke-width="2"/>
+<line x1="170" y1="30" x2="170" y2="270" stroke="#374151" stroke-width="2"/>
+<line x1="50" y1="220" x2="290" y2="60" stroke="#0369a1" stroke-width="3"/>
+<circle cx="170" cy="140" r="5" fill="white" stroke="#dc2626" stroke-width="2"/>
+<text x="178" y="135" font-size="11" fill="#dc2626" font-weight="bold">(1,2)</text>
+<text x="170" y="275" text-anchor="middle" font-size="11" fill="#075985">الثقب عند x=1، النهاية = 2</text>
+</svg>`,
+arc_length_formula: `<svg class="svg-graph" width="340" height="160" viewBox="0 0 340 160" xmlns="http://www.w3.org/2000/svg">
+<rect x="5" y="5" width="330" height="150" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="170" y="30" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold">📏 قانون طول المنحنى</text>
+<text x="170" y="65" text-anchor="middle" font-size="18" fill="#9a3412" font-family="'Times New Roman', serif">L = ∫[a,b] √(1 + [f'(x)]²) dx</text>
+<rect x="30" y="85" width="280" height="50" rx="6" fill="#fff" stroke="#ea580c"/>
+<text x="170" y="105" text-anchor="middle" font-size="11" fill="#9a3412">التقريب باستخدام n فترات:</text>
+<text x="170" y="125" text-anchor="middle" font-size="11" fill="#9a3412">L ≈ Σ √(Δx² + Δy²)</text>
+</svg>`,
+conjugate_root_denominator: `<svg class="svg-graph" width="340" height="260" viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="5" y="5" width="330" height="250" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2"/>
+<text x="170" y="25" text-anchor="middle" font-size="14" fill="#0f766e" font-weight="bold">🧮 جذر في المقام</text>
+<text x="170" y="55" text-anchor="middle" font-size="12" fill="#0f766e" font-family="'Times New Roman', serif">lim(x→0) 2x / (3 - √(x+9))</text>
+<line x1="170" y1="65" x2="170" y2="85" stroke="#0d9488" stroke-width="2"/>
+<text x="170" y="100" text-anchor="middle" font-size="11" fill="#0f766e">نضرب البسط والمقام في المرافق:</text>
+<text x="170" y="120" text-anchor="middle" font-size="12" fill="#dc2626" font-family="'Times New Roman', serif" font-weight="bold">(3 + √(x+9))</text>
+<line x1="170" y1="125" x2="170" y2="145" stroke="#0d9488" stroke-width="2"/>
+<text x="170" y="160" text-anchor="middle" font-size="11" fill="#0f766e">المقام يصبح:</text>
+<text x="170" y="180" text-anchor="middle" font-size="12" fill="#0f766e" font-family="'Times New Roman', serif">9 - (x+9) = -x</text>
+<text x="170" y="200" text-anchor="middle" font-size="11" fill="#0f766e">نحذف x من البسط والمقام</text>
+<text x="170" y="220" text-anchor="middle" font-size="12" fill="#0f766e" font-weight="bold">ثم نعوض x = 0</text>
+<text x="170" y="245" text-anchor="middle" font-size="13" fill="#0f766e" font-family="'Times New Roman', serif" font-weight="bold">النتيجة = -12</text>
+</svg>`,
+squeeze_theorem: `<svg class="svg-graph" width="340" height="200" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="5" y="5" width="330" height="190" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="170" y="30" text-anchor="middle" font-size="14" fill="#065f46" font-weight="bold">📐 نظرية الشطيرة</text>
+<text x="170" y="60" text-anchor="middle" font-size="16" fill="#065f46" font-family="'Times New Roman', serif">g(x) ≤ f(x) ≤ h(x)</text>
+<text x="170" y="90" text-anchor="middle" font-size="16" fill="#065f46" font-family="'Times New Roman', serif">lim g(x) = lim h(x) = L</text>
+<text x="170" y="120" text-anchor="middle" font-size="18" fill="#dc2626" font-family="'Times New Roman', serif" font-weight="bold">→ lim f(x) = L</text>
+<text x="170" y="150" text-anchor="middle" font-size="12" fill="#065f46">-1 ≤ sin(θ) ≤ 1</text>
+<text x="170" y="170" text-anchor="middle" font-size="12" fill="#065f46">-1 ≤ cos(θ) ≤ 1</text>
+</svg>`
+};
+
+const originalExamData = {
+sections: [
+{
+id: 'sec1',
+title: { ar: '🔹 القسم 1: تقدير ميل المنحنى', en: '🔹 Section 1: Estimating Curve Slope' },
+questions: [
+{
+q: { ar: 'قدّر ميل المنحنى <span class="math-display">f(x) = x² + 1</span> عند <span class="math-display">x = 1</span>', en: 'Estimate the slope of <span class="math-display">f(x) = x² + 1</span> at <span class="math-display">x = 1</span>' },
+svg: svgGraphs.quadratic_tangent,
+options: [
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' }
+],
+correct: 0,
+answer: { ar: 'f\'(x) = 2x، عند x=1: f\'(1) = 2(1) = 2', en: 'f\'(x) = 2x, at x=1: f\'(1) = 2(1) = 2' }
+},
+{
+q: { ar: 'قدّر ميل المنحنى <span class="math-display">f(x) = x³ + 2</span> عند <span class="math-display">x = 1</span>', en: 'Estimate the slope of <span class="math-display">f(x) = x³ + 2</span> at <span class="math-display">x = 1</span>' },
+options: [
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' }
+],
+correct: 0,
+answer: { ar: 'f\'(x) = 3x²، عند x=1: f\'(1) = 3(1)² = 3', en: 'f\'(x) = 3x², at x=1: f\'(1) = 3(1)² = 3' }
+},
+{
+q: { ar: 'قدّر ميل المنحنى <span class="math-display">f(x) = cos x</span> عند <span class="math-display">x = 0</span>', en: 'Estimate the slope of <span class="math-display">f(x) = cos x</span> at <span class="math-display">x = 0</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' },
+{ ar: '<span class="math-display">π/2</span>', en: '<span class="math-display">π/2</span>' }
+],
+correct: 0,
+answer: { ar: 'f\'(x) = -sin x، عند x=0: f\'(0) = -sin(0) = 0', en: 'f\'(x) = -sin x, at x=0: f\'(0) = -sin(0) = 0' }
+},
+{
+q: { ar: 'قدّر ميل المنحنى <span class="math-display">f(x) = √(x+1)</span> عند <span class="math-display">x = 0</span>', en: 'Estimate the slope of <span class="math-display">f(x) = √(x+1)</span> at <span class="math-display">x = 0</span>' },
+options: [
+{ ar: '<span class="math-display">0.5</span>', en: '<span class="math-display">0.5</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' }
+],
+correct: 0,
+answer: { ar: 'f\'(x) = 1/(2√(x+1))، عند x=0: f\'(0) = 1/(2√1) = 0.5', en: 'f\'(x) = 1/(2√(x+1)), at x=0: f\'(0) = 1/(2√1) = 0.5' }
+},
+{
+q: { ar: 'ميل المنحنى <span class="math-display">f(x) = x² + 2x + 1</span> عند <span class="math-display">x = -1</span> هو:', en: 'Slope of <span class="math-display">f(x) = x² + 2x + 1</span> at <span class="math-display">x = -1</span> is:' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">-2</span>', en: '<span class="math-display">-2</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' }
+],
+correct: 0,
+answer: { ar: 'f\'(x) = 2x + 2، عند x=-1: f\'(-1) = 2(-1) + 2 = 0', en: 'f\'(x) = 2x + 2, at x=-1: f\'(-1) = 2(-1) + 2 = 0' }
+}
+]
+},
+{
+id: 'sec2',
+title: { ar: '🔹 القسم 2: تقدير طول المنحنى', en: '🔹 Section 2: Estimating Arc Length' },
+questions: [
+{
+q: { ar: 'قدّر طول المنحنى <span class="math-display">f(x) = cos x</span> في الفترة <span class="math-display">0 ≤ x ≤ π/2</span> باستخدام <span class="math-display">n = 4</span>', en: 'Estimate arc length of <span class="math-display">f(x) = cos x</span> on <span class="math-display">0 ≤ x ≤ π/2</span> with <span class="math-display">n = 4</span>' },
+svg: svgGraphs.arc_length_formula,
+options: [
+{ ar: '<span class="math-display">≈ 1.91</span>', en: '<span class="math-display">≈ 1.91</span>' },
+{ ar: '<span class="math-display">≈ 1.57</span>', en: '<span class="math-display">≈ 1.57</span>' },
+{ ar: '<span class="math-display">≈ 2.00</span>', en: '<span class="math-display">≈ 2.00</span>' },
+{ ar: '<span class="math-display">≈ 1.00</span>', en: '<span class="math-display">≈ 1.00</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام n=4: Δx = π/8، الطول ≈ 1.91', en: 'With n=4: Δx = π/8, length ≈ 1.91' }
+},
+{
+q: { ar: 'قدّر طول المنحنى <span class="math-display">f(x) = √(x+1)</span> في الفترة <span class="math-display">0 ≤ x ≤ 3</span> باستخدام <span class="math-display">n = 4</span>', en: 'Estimate arc length of <span class="math-display">f(x) = √(x+1)</span> on <span class="math-display">0 ≤ x ≤ 3</span> with <span class="math-display">n = 4</span>' },
+options: [
+{ ar: '<span class="math-display">≈ 3.82</span>', en: '<span class="math-display">≈ 3.82</span>' },
+{ ar: '<span class="math-display">≈ 3.00</span>', en: '<span class="math-display">≈ 3.00</span>' },
+{ ar: '<span class="math-display">≈ 4.50</span>', en: '<span class="math-display">≈ 4.50</span>' },
+{ ar: '<span class="math-display">≈ 2.50</span>', en: '<span class="math-display">≈ 2.50</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام n=4: Δx = 0.75، الطول ≈ 3.82', en: 'With n=4: Δx = 0.75, length ≈ 3.82' }
+},
+{
+q: { ar: 'قدّر طول المنحنى <span class="math-display">f(x) = 1/x</span> في الفترة <span class="math-display">1 ≤ x ≤ 2</span> باستخدام <span class="math-display">n = 4</span>', en: 'Estimate arc length of <span class="math-display">f(x) = 1/x</span> on <span class="math-display">1 ≤ x ≤ 2</span> with <span class="math-display">n = 4</span>' },
+options: [
+{ ar: '<span class="math-display">≈ 1.13</span>', en: '<span class="math-display">≈ 1.13</span>' },
+{ ar: '<span class="math-display">≈ 1.00</span>', en: '<span class="math-display">≈ 1.00</span>' },
+{ ar: '<span class="math-display">≈ 1.50</span>', en: '<span class="math-display">≈ 1.50</span>' },
+{ ar: '<span class="math-display">≈ 0.75</span>', en: '<span class="math-display">≈ 0.75</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام n=4: Δx = 0.25، الطول ≈ 1.13', en: 'With n=4: Δx = 0.25, length ≈ 1.13' }
+},
+{
+q: { ar: 'قدّر طول المنحنى <span class="math-display">f(x) = x² + 1</span> في الفترة <span class="math-display">-2 ≤ x ≤ 2</span> باستخدام <span class="math-display">n = 4</span>', en: 'Estimate arc length of <span class="math-display">f(x) = x² + 1</span> on <span class="math-display">-2 ≤ x ≤ 2</span> with <span class="math-display">n = 4</span>' },
+options: [
+{ ar: '<span class="math-display">≈ 9.29</span>', en: '<span class="math-display">≈ 9.29</span>' },
+{ ar: '<span class="math-display">≈ 8.00</span>', en: '<span class="math-display">≈ 8.00</span>' },
+{ ar: '<span class="math-display">≈ 10.00</span>', en: '<span class="math-display">≈ 10.00</span>' },
+{ ar: '<span class="math-display">≈ 7.50</span>', en: '<span class="math-display">≈ 7.50</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام n=4: Δx = 1، الطول ≈ 9.29', en: 'With n=4: Δx = 1, length ≈ 9.29' }
+},
+{
+q: { ar: 'قدّر طول المنحنى <span class="math-display">f(x) = x³ + 2</span> في الفترة <span class="math-display">-1 ≤ x ≤ 1</span> باستخدام <span class="math-display">n = 4</span>', en: 'Estimate arc length of <span class="math-display">f(x) = x³ + 2</span> on <span class="math-display">-1 ≤ x ≤ 1</span> with <span class="math-display">n = 4</span>' },
+options: [
+{ ar: '<span class="math-display">≈ 2.96</span>', en: '<span class="math-display">≈ 2.96</span>' },
+{ ar: '<span class="math-display">≈ 2.00</span>', en: '<span class="math-display">≈ 2.00</span>' },
+{ ar: '<span class="math-display">≈ 3.50</span>', en: '<span class="math-display">≈ 3.50</span>' },
+{ ar: '<span class="math-display">≈ 2.50</span>', en: '<span class="math-display">≈ 2.50</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام n=4: Δx = 0.5، الطول ≈ 2.96', en: 'With n=4: Δx = 0.5, length ≈ 2.96' }
+}
+]
+},
+{
+id: 'sec3',
+title: { ar: '🔹 القسم 3: حساب النهايات الجبرية', en: '🔹 Section 3: Algebraic Limits' },
+questions: [
+{
+q: { ar: 'احسب النهاية: <span class="math-display">lim(x→1) (x² - 1)/(x - 1)</span>', en: 'Calculate: <span class="math-display">lim(x→1) (x² - 1)/(x - 1)</span>' },
+svg: svgGraphs.limit_graph_1,
+options: [
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'بالتحليل: (x²-1)/(x-1) = (x-1)(x+1)/(x-1) = x+1. عند x→1: 1+1 = 2', en: 'Factor: (x²-1)/(x-1) = (x-1)(x+1)/(x-1) = x+1. As x→1: 1+1 = 2' }
+},
+{
+q: { ar: 'احسب النهاية: <span class="math-display">lim(x→2) (x² - 4)/(x - 2)</span>', en: 'Calculate: <span class="math-display">lim(x→2) (x² - 4)/(x - 2)</span>' },
+options: [
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' }
+],
+correct: 0,
+answer: { ar: 'بالتحليل: (x²-4)/(x-2) = (x-2)(x+2)/(x-2) = x+2. عند x→2: 2+2 = 4', en: 'Factor: (x²-4)/(x-2) = (x-2)(x+2)/(x-2) = x+2. As x→2: 2+2 = 4' }
+},
+{
+q: { ar: 'احسب النهاية: <span class="math-display">lim(x→∞) (3x² + 2x)/(x² + 1)</span>', en: 'Calculate: <span class="math-display">lim(x→∞) (3x² + 2x)/(x² + 1)</span>' },
+options: [
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' }
+],
+correct: 0,
+answer: { ar: 'بقسمة البسط والمقام على x²: (3+2/x)/(1+1/x²). عندما x→∞: 3/1 = 3', en: 'Divide by x²: (3+2/x)/(1+1/x²). As x→∞: 3/1 = 3' }
+},
+{
+q: { ar: 'احسب النهاية: <span class="math-display">lim(x→4) (√x - 2)/(x - 4)</span>', en: 'Calculate: <span class="math-display">lim(x→4) (√x - 2)/(x - 4)</span>' },
+svg: svgGraphs.conjugate_root_denominator,
+options: [
+{ ar: '<span class="math-display">1/4</span>', en: '<span class="math-display">1/4</span>' },
+{ ar: '<span class="math-display">1/2</span>', en: '<span class="math-display">1/2</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' }
+],
+correct: 0,
+answer: { ar: 'بالضرب في المرافق: (√x-2)(√x+2)/((x-4)(√x+2)) = (x-4)/((x-4)(√x+2)) = 1/(√x+2). عند x→4: 1/4', en: 'Multiply by conjugate: (√x-2)(√x+2)/((x-4)(√x+2)) = (x-4)/((x-4)(√x+2)) = 1/(√x+2). As x→4: 1/4' }
+},
+{
+q: { ar: 'احسب النهاية باستخدام لوبيتال: <span class="math-display">lim(x→0) sin(x)/x</span>', en: 'Calculate using L\'Hôpital: <span class="math-display">lim(x→0) sin(x)/x</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' }
+],
+correct: 0,
+answer: { ar: 'باستخدام لوبيتال: مشتقة البسط = cos(x)، مشتقة المقام = 1. عند x→0: cos(0)/1 = 1', en: 'Using L\'Hôpital: derivative of numerator = cos(x), denominator = 1. As x→0: cos(0)/1 = 1' }
+}
+]
+},
+{
+id: 'sec4',
+title: { ar: '🔹 القسم 4: النهايات بالتعويض والتحليل', en: '🔹 Section 4: Limits by Substitution & Factoring' },
+questions: [
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) (x² - 3x + 1)</span>', en: 'Find <span class="math-display">lim(x→0) (x² - 3x + 1)</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' },
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' }
+],
+correct: 0,
+answer: { ar: 'بالتعويض المباشر: 0² - 3(0) + 1 = 1', en: 'By direct substitution: 0² - 3(0) + 1 = 1' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→-2) (x² - x - 2)/(x² - 4)</span>', en: 'Find <span class="math-display">lim(x→-2) (x² - x - 2)/(x² - 4)</span>' },
+options: [
+{ ar: '<span class="math-display">3/4</span>', en: '<span class="math-display">3/4</span>' },
+{ ar: '<span class="math-display">-3/4</span>', en: '<span class="math-display">-3/4</span>' },
+{ ar: '<span class="math-display">1/2</span>', en: '<span class="math-display">1/2</span>' },
+{ ar: '<span class="math-display">-1/2</span>', en: '<span class="math-display">-1/2</span>' }
+],
+correct: 0,
+answer: { ar: 'البسط: (x-2)(x+1)، المقام: (x-2)(x+2). نحذف (x-2): (x+1)/(x+2). عند x=-2: (-1)/(0)... غير معرّف. لكن عند x→2: (x+1)/(x+2) = 3/4', en: 'Numerator: (x-2)(x+1), Denominator: (x-2)(x+2). Cancel (x-2): (x+1)/(x+2). At x=2: 3/4' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→2) (x² - 4)/(x - 2)</span>', en: 'Find <span class="math-display">lim(x→2) (x² - 4)/(x - 2)</span>' },
+options: [
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'البسط: (x-2)(x+2). نحذف (x-2): x+2. عند x=2: 4', en: 'Numerator: (x-2)(x+2). Cancel (x-2): x+2. At x=2: 4' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→3) (x² - 9)/(x - 3)</span>', en: 'Find <span class="math-display">lim(x→3) (x² - 9)/(x - 3)</span>' },
+options: [
+{ ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' },
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">9</span>', en: '<span class="math-display">9</span>' }
+],
+correct: 0,
+answer: { ar: 'البسط: (x-3)(x+3). نحذف (x-3): x+3. عند x=3: 6', en: 'Numerator: (x-3)(x+3). Cancel (x-3): x+3. At x=3: 6' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→1) (x³ - 1)/(x² + 2x - 3)</span>', en: 'Find <span class="math-display">lim(x→1) (x³ - 1)/(x² + 2x - 3)</span>' },
+options: [
+{ ar: '<span class="math-display">3/4</span>', en: '<span class="math-display">3/4</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">4/3</span>', en: '<span class="math-display">4/3</span>' },
+{ ar: '<span class="math-display">3</span>', en: '<span class="math-display">3</span>' }
+],
+correct: 0,
+answer: { ar: 'البسط: (x-1)(x²+x+1)، المقام: (x-1)(x+3). نحذف (x-1): (x²+x+1)/(x+3). عند x=1: 3/4', en: 'Numerator: (x-1)(x²+x+1), Denominator: (x-1)(x+3). Cancel (x-1): (x²+x+1)/(x+3). At x=1: 3/4' }
+}
+]
+},
+{
+id: 'sec5',
+title: { ar: '🔹 القسم 5: النهايات بالضرب في المرافق', en: '🔹 Section 5: Limits by Conjugate Method' },
+questions: [
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) 2x / (3 - √(x+9))</span>', en: 'Find <span class="math-display">lim(x→0) 2x / (3 - √(x+9))</span>' },
+svg: svgGraphs.conjugate_root_denominator,
+options: [
+{ ar: '<span class="math-display">-12</span>', en: '<span class="math-display">-12</span>' },
+{ ar: '<span class="math-display">12</span>', en: '<span class="math-display">12</span>' },
+{ ar: '<span class="math-display">-6</span>', en: '<span class="math-display">-6</span>' },
+{ ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' }
+],
+correct: 0,
+answer: { ar: 'نضرب في المرافق (3+√(x+9)): البسط = 2x(3+√(x+9))، المقام = 9-(x+9) = -x. نحذف x: -2(3+√(x+9)). عند x=0: -2(3+3) = -12', en: 'Multiply by conjugate (3+√(x+9)): numerator = 2x(3+√(x+9)), denominator = 9-(x+9) = -x. Cancel x: -2(3+√(x+9)). At x=0: -2(3+3) = -12' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→1) (x-1) / (√x - 1)</span>', en: 'Find <span class="math-display">lim(x→1) (x-1) / (√x - 1)</span>' },
+options: [
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' }
+],
+correct: 0,
+answer: { ar: 'نضرب في المرافق (√x+1): البسط = (x-1)(√x+1)، المقام = x-1. نحذف (x-1): √x+1. عند x=1: 2', en: 'Multiply by conjugate (√x+1): numerator = (x-1)(√x+1), denominator = x-1. Cancel (x-1): √x+1. At x=1: 2' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) (√(x+4) - 2) / (√(x+9) - 3)</span>', en: 'Find <span class="math-display">lim(x→0) (√(x+4) - 2) / (√(x+9) - 3)</span>' },
+options: [
+{ ar: '<span class="math-display">3/2</span>', en: '<span class="math-display">3/2</span>' },
+{ ar: '<span class="math-display">4/3</span>', en: '<span class="math-display">4/3</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">2/3</span>', en: '<span class="math-display">2/3</span>' }
+],
+correct: 0,
+answer: { ar: 'نضرب في مرافق البسط ومرافق المقام: البسط يصبح x(√(x+9)+3)، المقام يصبح x(√(x+4)+2). نحذف x: (√(x+9)+3)/(√(x+4)+2). عند x=0: (3+3)/(2+2) = 6/4 = 3/2', en: 'Multiply by both conjugates: result = (√(x+9)+3)/(√(x+4)+2). At x=0: (3+3)/(2+2) = 6/4 = 3/2' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) (√(x+9) - 3) / x</span>', en: 'Find <span class="math-display">lim(x→0) (√(x+9) - 3) / x</span>' },
+options: [
+{ ar: '<span class="math-display">1/6</span>', en: '<span class="math-display">1/6</span>' },
+{ ar: '<span class="math-display">1/3</span>', en: '<span class="math-display">1/3</span>' },
+{ ar: '<span class="math-display">1/9</span>', en: '<span class="math-display">1/9</span>' },
+{ ar: '<span class="math-display">6</span>', en: '<span class="math-display">6</span>' }
+],
+correct: 0,
+answer: { ar: 'نضرب في المرافق (√(x+9)+3): البسط = (x+9)-9 = x، المقام = x(√(x+9)+3). نحذف x: 1/(√(x+9)+3). عند x=0: 1/6', en: 'Multiply by conjugate (√(x+9)+3): numerator = (x+9)-9 = x, denominator = x(√(x+9)+3). Cancel x: 1/(√(x+9)+3). At x=0: 1/6' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) (√(1+2x) - 1) / x</span>', en: 'Find <span class="math-display">lim(x→0) (√(1+2x) - 1) / x</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: '<span class="math-display">1/2</span>', en: '<span class="math-display">1/2</span>' },
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' }
+],
+correct: 0,
+answer: { ar: 'نضرب في المرافق (√(1+2x)+1): البسط = (1+2x)-1 = 2x، المقام = x(√(1+2x)+1). نحذف x: 2/(√(1+2x)+1). عند x=0: 2/(1+1) = 1', en: 'Multiply by conjugate (√(1+2x)+1): numerator = (1+2x)-1 = 2x, denominator = x(√(1+2x)+1). Cancel x: 2/(√(1+2x)+1). At x=0: 2/(1+1) = 1' }
+}
+]
+},
+{
+id: 'sec6',
+title: { ar: '🔹 القسم 6: نهايات الدوال متعددة القواعد', en: '🔹 Section 6: Limits of Piecewise Functions' },
+questions: [
+{
+q: { ar: 'لكي تكون <span class="math-display">lim(x→c) f(x)</span> موجودة، يجب أن يتحقق:', en: 'For <span class="math-display">lim(x→c) f(x)</span> to exist, it must be true that:' },
+options: [
+{ ar: '<span class="math-display">f(c)</span> معرفة فقط', en: '<span class="math-display">f(c)</span> is defined only' },
+{ ar: '<span class="math-display">lim(x→c⁻) f(x) = lim(x→c⁺) f(x)</span>', en: '<span class="math-display">lim(x→c⁻) f(x) = lim(x→c⁺) f(x)</span>' },
+{ ar: '<span class="math-display">f(c) = 0</span>', en: '<span class="math-display">f(c) = 0</span>' },
+{ ar: 'النهاية اليمنى لا تساوي النهاية اليسرى', en: 'The right limit does not equal the left limit' }
+],
+correct: 1,
+answer: { ar: 'شرط وجود النهاية هو تساوي النهاية اليسرى والنهاية اليمنى عند النقطة c، بغض النظر عن قيمة f(c).', en: 'The condition for limit existence is that the left limit equals the right limit at point c, regardless of f(c) value.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→2) f(x)</span> حيث <span class="math-display">f(x) = {2x, x&lt;2; x², x≥2}</span>', en: 'Find <span class="math-display">lim(x→2) f(x)</span> where <span class="math-display">f(x) = {2x, x&lt;2; x², x≥2}</span>' },
+options: [
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' }
+],
+correct: 0,
+answer: { ar: 'النهاية اليسرى: lim(x→2⁻) 2x = 4. النهاية اليمنى: lim(x→2⁺) x² = 4. بما أنهما متساويتان، النهاية = 4.', en: 'Left limit: lim(x→2⁻) 2x = 4. Right limit: lim(x→2⁺) x² = 4. Since they are equal, limit = 4.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(h→0) [(2+h)² - 4] / h</span>', en: 'Find <span class="math-display">lim(h→0) [(2+h)² - 4] / h</span>' },
+options: [
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">2</span>', en: '<span class="math-display">2</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'نوسع: (2+h)² - 4 = 4 + 4h + h² - 4 = 4h + h² = h(4+h). إذن النهاية = lim(h→0) h(4+h)/h = lim(h→0) (4+h) = 4.', en: 'Expand: (2+h)² - 4 = 4 + 4h + h² - 4 = 4h + h² = h(4+h). So limit = lim(h→0) h(4+h)/h = lim(h→0) (4+h) = 4.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→2) sin(x²-4) / (x²-4)</span>', en: 'Find <span class="math-display">lim(x→2) sin(x²-4) / (x²-4)</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 1,
+answer: { ar: 'بوضع u = x²-4، عندما x→2 فإن u→0. النهاية تصبح lim(u→0) sin(u)/u = 1 (نهاية شهيرة).', en: 'Let u = x²-4. As x→2, u→0. The limit becomes lim(u→0) sin(u)/u = 1 (famous limit).' }
+},
+{
+q: { ar: 'أوجد قيمة k التي تجعل <span class="math-display">lim(x→1) f(x)</span> موجودة، حيث <span class="math-display">f(x) = {kx+2, x&lt;1; 3x, x≥1}</span>', en: 'Find the value of k that makes <span class="math-display">lim(x→1) f(x)</span> exist, where <span class="math-display">f(x) = {kx+2, x&lt;1; 3x, x≥1}</span>' },
+options: [
+{ ar: '<span class="math-display">k = 1</span>', en: '<span class="math-display">k = 1</span>' },
+{ ar: '<span class="math-display">k = 3</span>', en: '<span class="math-display">k = 3</span>' },
+{ ar: '<span class="math-display">k = 2</span>', en: '<span class="math-display">k = 2</span>' },
+{ ar: '<span class="math-display">k = 0</span>', en: '<span class="math-display">k = 0</span>' }
+],
+correct: 0,
+answer: { ar: 'النهاية اليسرى: lim(x→1⁻) (kx+2) = k+2. النهاية اليمنى: lim(x→1⁺) 3x = 3. لكي توجد النهاية: k+2 = 3، إذن k = 1.', en: 'Left limit: lim(x→1⁻) (kx+2) = k+2. Right limit: lim(x→1⁺) 3x = 3. For limit to exist: k+2 = 3, so k = 1.' }
+}
+]
+},
+{
+id: 'sec7',
+title: { ar: '🔹 القسم 7: نهايات دالة القيمة المطلقة', en: '🔹 Section 7: Limits of Absolute Value Functions' },
+questions: [
+{
+q: { ar: 'ما هي قيمة <span class="math-display">|x|</span> عندما <span class="math-display">x ≥ 0</span>؟', en: 'What is the value of <span class="math-display">|x|</span> when <span class="math-display">x ≥ 0</span>?' },
+options: [
+{ ar: '<span class="math-display">-x</span>', en: '<span class="math-display">-x</span>' },
+{ ar: '<span class="math-display">x</span>', en: '<span class="math-display">x</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">|x|</span> غير معرفة', en: '<span class="math-display">|x|</span> is undefined' }
+],
+correct: 1,
+answer: { ar: 'عندما x ≥ 0، فإن |x| = x. القيمة المطلقة للعدد الموجب أو الصفر هي العدد نفسه.', en: 'When x ≥ 0, |x| = x. The absolute value of a positive number or zero is the number itself.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→2⁻) |x-2|/(x-2)</span>', en: 'Find <span class="math-display">lim(x→2) |x-2|/(x-2)</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 1,
+answer: { ar: 'عندما x→2⁻ (من اليسار)، فإن x &lt; 2، لذا |x-2| = -(x-2). النهاية = -(x-2)/(x-2) = -1.', en: 'When x→2⁻ (from left), x &lt; 2, so |x-2| = -(x-2). Limit = -(x-2)/(x-2) = -1.' }
+},
+{
+q: { ar: 'هل النهاية <span class="math-display">lim(x→2) |x-2|/(x-2)</span> موجودة؟', en: 'Does the limit <span class="math-display">lim(x→2) |x-2|/(x-2)</span> exist?' },
+options: [
+{ ar: 'نعم، وتساوي 1', en: 'Yes, and equals 1' },
+{ ar: 'نعم، وتساوي -1', en: 'Yes, and equals -1' },
+{ ar: 'لا، لأن النهاية اليسرى ≠ النهاية اليمنى', en: 'No, because left limit ≠ right limit' },
+{ ar: 'نعم، وتساوي 0', en: 'Yes, and equals 0' }
+],
+correct: 2,
+answer: { ar: 'النهاية اليسرى = -1 والنهاية اليمنى = 1. بما أنهما غير متساويتين، النهاية غير موجودة.', en: 'Left limit = -1 and right limit = 1. Since they are not equal, the limit does not exist.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→0) |x|/x</span>', en: 'Find <span class="math-display">lim(x→0) |x|/x</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 3,
+answer: { ar: 'النهاية اليسرى (x→0): |x|/x = -x/x = -1. النهاية اليمنى (x→0⁺): |x|/x = x/x = 1. غير موجودة.', en: 'Left limit (x→0⁻): |x|/x = -x/x = -1. Right limit (x→0⁺): |x|/x = x/x = 1. Does not exist.' }
+},
+{
+q: { ar: 'أوجد <span class="math-display">lim(x→4) |x-4|</span>', en: 'Find <span class="math-display">lim(x→4) |x-4|</span>' },
+options: [
+{ ar: '<span class="math-display">4</span>', en: '<span class="math-display">4</span>' },
+{ ar: '<span class="math-display">-4</span>', en: '<span class="math-display">-4</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 2,
+answer: { ar: 'النهاية اليسرى = 0 والنهاية اليمنى = 0. النهاية موجودة وتساوي 0.', en: 'Left limit = 0 and right limit = 0. The limit exists and equals 0.' }
+}
+]
+},
+{
+id: 'sec8',
+title: { ar: '🔹 القسم 8: نهايات الدوال المثلثية', en: '🔹 Section 8: Trigonometric Limits' },
+questions: [
+{
+q: { ar: 'ما قيمة النهاية: <span class="math-display">lim(x→0) sin(x)/x</span>', en: 'What is the value of: <span class="math-display">lim(x→0) sin(x)/x</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: '<span class="math-display">غير معرّف</span>', en: '<span class="math-display">undefined</span>' }
+],
+correct: 1,
+answer: { ar: 'هذه النهاية الأساسية تساوي 1. هذه من أهم النهايات في الرياضيات.', en: 'This fundamental limit equals 1. This is one of the most important limits in mathematics.' }
+},
+{
+q: { ar: 'احسب: <span class="math-display">lim(x→0) sin(5x)/x</span>', en: 'Calculate: <span class="math-display">lim(x→0) sin(5x)/x</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">5</span>', en: '<span class="math-display">5</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1/5</span>', en: '<span class="math-display">1/5</span>' }
+],
+correct: 1,
+answer: { ar: 'نضرب ونقسم في 5: lim sin(5x)/x = 5 × lim sin(5x)/(5x) = 5 × 1 = 5', en: 'Multiply and divide by 5: lim sin(5x)/x = 5 × lim sin(5x)/(5x) = 5 × 1 = 5' }
+},
+{
+q: { ar: 'احسب: <span class="math-display">lim(x→0) tan(x)/x</span>', en: 'Calculate: <span class="math-display">lim(x→0) tan(x)/x</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: '<span class="math-display">π</span>', en: '<span class="math-display">π</span>' }
+],
+correct: 1,
+answer: { ar: 'tan(x) = sin(x)/cos(x). إذن lim tan(x)/x = lim sin(x)/x × lim 1/cos(x) = 1 × 1 = 1', en: 'tan(x) = sin(x)/cos(x). So lim tan(x)/x = lim sin(x)/x × lim 1/cos(x) = 1 × 1 = 1' }
+},
+{
+q: { ar: 'احسب: <span class="math-display">lim(x→0) (1 - cos(x))/x</span>', en: 'Calculate: <span class="math-display">lim(x→0) (1 - cos(x))/x</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: '<span class="math-display">1/2</span>', en: '<span class="math-display">1/2</span>' }
+],
+correct: 0,
+answer: { ar: 'هذه نهاية معروفة تساوي 0. يمكن إثباتها باستخدام المتطابقات المثلثية.', en: 'This is a known limit that equals 0. Can be proven using trigonometric identities.' }
+},
+{
+q: { ar: 'احسب: <span class="math-display">lim(x→0) sin(3x)/sin(2x)</span>', en: 'Calculate: <span class="math-display">lim(x→0) sin(3x)/sin(2x)</span>' },
+options: [
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">3/2</span>', en: '<span class="math-display">3/2</span>' },
+{ ar: '<span class="math-display">2/3</span>', en: '<span class="math-display">2/3</span>' },
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' }
+],
+correct: 1,
+answer: { ar: 'نستخدم النهاية الأساسية: lim sin(3x)/sin(2x) = (3/2) × lim [sin(3x)/(3x)]/[sin(2x)/(2x)] = 3/2', en: 'Using fundamental limit: lim sin(3x)/sin(2x) = (3/2) × lim [sin(3x)/(3x)]/[sin(2x)/(2x)] = 3/2' }
+}
+]
+},
+{
+id: 'sec9',
+title: { ar: '🔹 القسم 9: نظرية الشطيرة', en: '🔹 Section 9: Squeeze Theorem' },
+questions: [
+{
+q: { ar: 'ما الشرط الأساسي لتطبيق نظرية الشطيرة على <span class="math-display">f(x)</span>؟', en: 'What is the basic condition to apply the Squeeze Theorem on <span class="math-display">f(x)</span>?' },
+svg: svgGraphs.squeeze_theorem,
+options: [
+{ ar: 'أن تكون <span class="math-display">f(x)</span> دالة مستمرة فقط', en: 'That <span class="math-display">f(x)</span> is only a continuous function' },
+{ ar: 'أن تكون محصورة بين دالتين لهما نفس النهاية عند النقطة', en: 'That it is squeezed between two functions with the same limit at the point' },
+{ ar: 'أن تكون <span class="math-display">f(x)</span> دالة مثلثية', en: 'That <span class="math-display">f(x)</span> is a trigonometric function' },
+{ ar: 'أن تكون النهاية غير موجودة', en: 'That the limit does not exist' }
+],
+correct: 1,
+answer: { ar: 'نظرية الشطيرة تتطلب أن تكون الدالة محصورة بين دالتين g(x) و h(x) بحيث g(x) ≤ f(x) ≤ h(x) ونهايتاهما متساويتان.', en: 'The Squeeze Theorem requires the function to be squeezed between g(x) and h(x) with g(x) ≤ f(x) ≤ h(x) and both limits equal.' }
+},
+{
+q: { ar: 'إذا كانت <span class="math-display">g(x) ≤ f(x) ≤ h(x)</span> و <span class="math-display">lim g(x) = 5</span> و <span class="math-display">lim h(x) = 5</span>، فما قيمة <span class="math-display">lim f(x)</span>؟', en: 'If <span class="math-display">g(x) ≤ f(x) ≤ h(x)</span> and <span class="math-display">lim g(x) = 5</span> and <span class="math-display">lim h(x) = 5</span>, what is <span class="math-display">lim f(x)</span>?' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">5</span>', en: '<span class="math-display">5</span>' },
+{ ar: '<span class="math-display">10</span>', en: '<span class="math-display">10</span>' },
+{ ar: 'غير معرّف', en: 'Undefined' }
+],
+correct: 1,
+answer: { ar: 'بحسب نظرية الشطيرة، إذا كانت نهايتا الدالتين المحصورتين متساويتين (= 5)، فإن نهاية الدالة المحصورة بينهما تساوي نفس القيمة = 5.', en: 'By the Squeeze Theorem, if both bounding functions have the same limit (= 5), then the squeezed function also has limit = 5.' }
+},
+{
+q: { ar: 'أوجد: <span class="math-display">lim(x→0) x²·sin(1/x)</span>', en: 'Find: <span class="math-display">lim(x→0) x²·sin(1/x)</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'بما أن -1 ≤ sin(1/x) ≤ 1، نضرب في x²: -x² ≤ x²·sin(1/x) ≤ x². ونهاية الطرفين عند 0 هي 0، إذن النهاية = 0.', en: 'Since -1 ≤ sin(1/x) ≤ 1, multiply by x²: -x² ≤ x²·sin(1/x) ≤ x². Both bounds → 0, so limit = 0.' }
+},
+{
+q: { ar: 'أوجد: <span class="math-display">lim(x→0) x·cos(1/x)</span>', en: 'Find: <span class="math-display">lim(x→0) x·cos(1/x)</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">-1</span>', en: '<span class="math-display">-1</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'بما أن -1 ≤ cos(1/x) ≤ 1، نضرب في |x|: -|x| ≤ x·cos(1/x) ≤ |x|. ونهاية الطرفين = 0، إذن النهاية = 0.', en: 'Since -1 ≤ cos(1/x) ≤ 1, multiply by |x|: -|x| ≤ x·cos(1/x) ≤ |x|. Both bounds → 0, so limit = 0.' }
+},
+{
+q: { ar: 'أوجد: <span class="math-display">lim(x→∞) sin(x)/x</span>', en: 'Find: <span class="math-display">lim(x→∞) sin(x)/x</span>' },
+options: [
+{ ar: '<span class="math-display">0</span>', en: '<span class="math-display">0</span>' },
+{ ar: '<span class="math-display">1</span>', en: '<span class="math-display">1</span>' },
+{ ar: '<span class="math-display">∞</span>', en: '<span class="math-display">∞</span>' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 0,
+answer: { ar: 'بما أن -1 ≤ sin(x) ≤ 1، نقسم على x (موجب): -1/x ≤ sin(x)/x ≤ 1/x. ونهاية الطرفين عند ∞ هي 0، إذن النهاية = 0.', en: 'Since -1 ≤ sin(x) ≤ 1, divide by x (positive): -1/x ≤ sin(x)/x ≤ 1/x. Both bounds → 0 as x→∞, so limit = 0.' }
+}
+]
+},
+{
+id: 'sec10',
+title: { ar: '🔹 القسم 10: الإتصال ونتائجه', en: '🔹 Section 10: Continuity & Its Consequences' },
+questions: [
+{
+q: { ar: 'حدد قيمة k التي تجعل الدالة f(x) متصلة عند x = 2 حيث f(x) = (x^2 - 4)/(x - 2) لـ x ≠ 2 و f(2) = k.', en: 'Determine the value of k that makes f(x) continuous at x = 2, where f(x) = (x^2 - 4)/(x - 2) for x ≠ 2 and f(2) = k.' },
+options: [
+{ ar: '2', en: '2' },
+{ ar: '4', en: '4' },
+{ ar: '0', en: '0' },
+{ ar: 'غير موجودة', en: 'Does not exist' }
+],
+correct: 1,
+answer: { ar: 'نحسب النهاية عند x=2: lim (x^2-4)/(x-2) = lim (x-2)(x+2)/(x-2) = lim (x+2) = 4. لكي تكون متصلة يجب أن تكون f(2) = 4.', en: 'Calculate the limit as x approaches 2: lim (x^2-4)/(x-2) = lim (x-2)(x+2)/(x-2) = lim (x+2) = 4. For continuity, f(2) must equal 4.' }
+},
+{
+q: { ar: 'أي من الدوال التالية غير متصلة عند x = 1؟', en: 'Which of the following functions is discontinuous at x = 1?' },
+options: [
+{ ar: 'f(x) = x^2 + 1', en: 'f(x) = x^2 + 1' },
+{ ar: 'f(x) = (x-1)/(x^2+1)', en: 'f(x) = (x-1)/(x^2+1)' },
+{ ar: 'f(x) = 1/(x-1)', en: 'f(x) = 1/(x-1)' },
+{ ar: 'f(x) = sin(x)', en: 'f(x) = sin(x)' }
+],
+correct: 2,
+answer: { ar: 'الدالة f(x) = 1/(x-1) غير معرفة عند x=1، وبالتالي هي غير متصلة.', en: 'The function f(x) = 1/(x-1) is undefined at x=1, therefore it is discontinuous.' }
+},
+{
+q: { ar: 'استخدم نظرية القيمة الوسطية: هل يوجد جذر للدالة f(x) = x^3 - x - 1 في الفترة [1, 2]؟', en: 'Use the Intermediate Value Theorem: Does f(x) = x^3 - x - 1 have a root in [1, 2]?' },
+options: [
+{ ar: 'نعم', en: 'Yes' },
+{ ar: 'لا', en: 'No' },
+{ ar: 'لا يمكن تحديد ذلك', en: 'Cannot be determined' },
+{ ar: 'الدالة غير متصلة', en: 'Function is discontinuous' }
+],
+correct: 0,
+answer: { ar: 'f(1) = 1-1-1 = -1. f(2) = 8-2-1 = 5. بما أن f(1) < 0 و f(2) > 0، يوجد جذر.', en: 'f(1) = 1-1-1 = -1. f(2) = 8-2-1 = 5. Since f(1) < 0 and f(2) > 0, a root exists.' }
+},
+{
+q: { ar: 'ما نوع عدم الاتصال للدالة f(x) = (x^2 - 1)/(x - 1) عند x = 1؟', en: 'What type of discontinuity does f(x) = (x^2 - 1)/(x - 1) have at x = 1?' },
+options: [
+{ ar: 'قفزي', en: 'Jump' },
+{ ar: 'قابل للإزالة', en: 'Removable' },
+{ ar: 'لانهائي', en: 'Infinite' },
+{ ar: 'متصلة', en: 'Continuous' }
+],
+correct: 1,
+answer: { ar: 'بما أن النهاية موجودة (تساوي 2) ولكن الدالة غير معرفة عند x=1، فهو عدم اتصال قابل للإزالة.', en: 'Since the limit exists (equals 2) but the function is undefined at x=1, it is a removable discontinuity.' }
+},
+{
+q: { ar: 'ما هو نوع عدم الاتصال للدالة f(x) = 1/x^2 عند x = 0؟', en: 'What type of discontinuity does f(x) = 1/x^2 have at x = 0?' },
+options: [
+{ ar: 'قفزي', en: 'Jump' },
+{ ar: 'قابل للإزالة', en: 'Removable' },
+{ ar: 'لانهائي', en: 'Infinite' },
+{ ar: 'متصلة', en: 'Continuous' }
+],
+correct: 2,
+answer: { ar: 'بما أن النهاية تؤول إلى ما لا نهاية، فهو عدم اتصال لانهائي.', en: 'Since the limit approaches infinity, it is an infinite discontinuity.' }
+}
+]
+}
+]
+};
+
+function shuffleArray(array) {
+const arr = [...array];
+for (let i = arr.length - 1; i > 0; i--) {
+const j = Math.floor(rng() * (i + 1));
+[arr[i], arr[j]] = [arr[j], arr[i]];
+}
+return arr;
+}
+
+let examData;
+let correctAnswersMap = {};
+let currentLang = 'ar';
+let timeRemaining = TOTAL_TIME;
+let timerInterval;
+
+function prepareShuffledExam() {
+rng = mulberry32(currentSeed);
+examData = JSON.parse(JSON.stringify(originalExamData));
+correctAnswersMap = {};
+let globalIdx = 0;
+examData.sections.forEach((section) => {
+section.questions = shuffleArray(section.questions);
+section.questions.forEach((q) => {
+const optionsWithCorrect = q.options.map((opt, idx) => ({
+option: opt,
+isCorrect: idx === q.correct
+}));
+const shuffledOptions = shuffleArray(optionsWithCorrect);
+q.options = shuffledOptions.map(o => o.option);
+const newCorrectIndex = shuffledOptions.findIndex(o => o.isCorrect);
+q.correct = newCorrectIndex;
+correctAnswersMap[globalIdx] = String.fromCharCode(97 + newCorrectIndex);
+globalIdx++;
+});
+});
+}
+
+function reshuffleExam() {
+const confirmMsg = currentLang === 'ar'
+? '🔄 سيتم إنشاء أسئلة جديدة ومسح إجاباتك الحالية. هل أنت متأكد؟'
+: '🔄 New questions will be generated and your current answers will be cleared. Are you sure?';
+if (confirm(confirmMsg)) {
+currentSeed = Date.now();
+timeRemaining = TOTAL_TIME;
+answersVisible = false;
+prepareShuffledExam();
+renderExam();
+saveState();
+alert(currentLang === 'ar' ? '🎲 تم تغيير الأسئلة! حظاً موفقاً! 🍀' : '🎲 Questions changed! Good luck! 🍀');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+}
+
+function setLanguage(lang) {
+currentLang = lang;
+document.documentElement.lang = lang;
+document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+document.body.classList.toggle('en-mode', lang === 'en');
+document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+el.innerHTML = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+});
+renderExam();
+saveState(false);
+}
+
+function renderExam() {
+const container = document.getElementById('exam-content');
+const labels = {
+ar: { option: ['أ', 'ب', 'ج', 'د'], answer: '✅ الإجابة:' },
+en: { option: ['A', 'B', 'C', 'D'], answer: '✅ Answer:' }
+};
+const lbl = labels[currentLang];
+const isRTL = currentLang === 'ar';
+let html = '';
+let globalIdx = 0;
+
+examData.sections.forEach((section) => {
+html += `<section class="bg-white p-6 rounded-2xl shadow-lg border-2 border-violet-100">
+<h2 class="text-xl font-bold mb-4 text-violet-700">${section.title[currentLang]}</h2>
+<ol class="space-y-4 text-sm">`;
+
+section.questions.forEach((q) => {
+const borderSide = isRTL ? 'border-r-4 pr-4' : 'border-l-4 pl-4';
+html += `<li class="${borderSide} border-violet-400 py-2" id="q-${globalIdx}">
+<strong>${globalIdx + 1}.</strong> ${q.q[currentLang]}<br>`;
+if (q.svg) html += `<div class="graph-container">${q.svg}</div>`;
+q.options.forEach((opt, oIdx) => {
+const radioSide = isRTL ? 'mr-4 ml-2' : 'ml-4 mr-2';
+html += `<label class="cursor-pointer block mt-1 ${isRTL ? 'mr-4' : 'ml-4'} hover:bg-violet-50 rounded-lg p-1 transition">
+<input type="radio" name="q${globalIdx}" value="${String.fromCharCode(97 + oIdx)}" class="${radioSide}">
+${lbl.option[oIdx]}) ${opt[currentLang]}
+</label>`;
+});
+html += `<div class="answer-box text-green-700 mt-2 font-medium ${answersVisible ? '' : 'hidden'} bg-green-50 rounded-lg p-2">
+${lbl.answer} ${lbl.option[q.correct]}) ${q.options[q.correct][currentLang]} — ${q.answer[currentLang]}
+</div></li>`;
+globalIdx++;
+});
+html += `</ol></section>`;
+});
+
+container.innerHTML = html;
+}
+
+function startTimer() {
+document.getElementById('timer-container').style.display = 'block';
+updateTimerDisplay();
+timerInterval = setInterval(() => {
+timeRemaining--;
+updateTimerDisplay();
+if (timeRemaining % 5 === 0) saveState(false);
+if (timeRemaining <= 300) document.getElementById('timer').classList.add('timer-warning');
+if (timeRemaining <= 0) {
+clearInterval(timerInterval);
+alert(currentLang === 'ar' ? "⏰ انتهى الوقت! سأصحح إجاباتك الآن." : "⏰ Time's up! Let me grade your answers.");
+gradeExam();
+}
+}, 1000);
+}
+
+function updateTimerDisplay() {
+const minutes = Math.floor(timeRemaining / 60);
+const seconds = timeRemaining % 60;
+document.getElementById('timer').textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+}
+
+function toggleAnswers() {
+answersVisible = !answersVisible;
+document.querySelectorAll('.answer-box').forEach(el => {
+el.classList.toggle('hidden', !answersVisible);
+});
+saveState(false);
+}
+
+function gradeExam() {
+let correctCount = 0;
+const sectionScores = new Array(TOTAL_SECTIONS).fill(0);
+for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+const selected = document.querySelector(`input[name="q${i}"]:checked`);
+const li = document.getElementById(`q-${i}`);
+const correctAnswer = correctAnswersMap[i];
+if (li) {
+const isCorrect = selected && selected.value === correctAnswer;
+if (isCorrect) {
+correctCount++;
+li.classList.add('correct');
+li.classList.remove('incorrect');
+const sectionIndex = Math.floor(i / QUESTIONS_PER_SECTION);
+if (sectionIndex < TOTAL_SECTIONS) {
+sectionScores[sectionIndex]++;
+}
+} else {
+li.classList.add('incorrect');
+li.classList.remove('correct');
+}
+}
+}
+const score = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
+document.getElementById('res-total').textContent = `${score} / 100`;
+document.getElementById('res-name').textContent = document.getElementById('studentName').value || (currentLang === 'ar' ? 'بطل' : 'Champion');
+document.getElementById('res-date').textContent = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-AE' : 'en-US');
+const performanceContainer = document.getElementById('sections-performance');
+performanceContainer.innerHTML = '';
+examData.sections.forEach((section, idx) => {
+performanceContainer.innerHTML += `
+<div class="flex justify-between items-center">
+<span class="text-gray-700">${section.title[currentLang]}</span>
+<span class="font-bold text-violet-700">${sectionScores[idx]}/${QUESTIONS_PER_SECTION}</span>
+</div>`;
+});
+const badge = document.getElementById('success-badge');
+document.getElementById('success-percent').textContent = `${score}%`;
+if (currentLang === 'ar') {
+if (score >= 90) { badge.textContent = '🌟 ممتاز جداً! 🌟'; badge.className = 'success-badge grade-excellent'; }
+else if (score >= 75) { badge.textContent = '👏 ممتاز! 👏'; badge.className = 'success-badge grade-good'; }
+else if (score >= 50) { badge.textContent = '👍 جيد'; badge.className = 'success-badge grade-pass'; }
+else { badge.textContent = '💪 حاول مرة أخرى'; badge.className = 'success-badge grade-fail'; }
+} else {
+if (score >= 90) { badge.textContent = '🌟 Outstanding! 🌟'; badge.className = 'success-badge grade-excellent'; }
+else if (score >= 75) { badge.textContent = '👏 Excellent! 👏'; badge.className = 'success-badge grade-good'; }
+else if (score >= 50) { badge.textContent = '👍 Good'; badge.className = 'success-badge grade-pass'; }
+else { badge.textContent = '💪 Try Again'; badge.className = 'success-badge grade-fail'; }
+}
+document.getElementById('results-panel').classList.remove('hidden');
+document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+if (timerInterval) clearInterval(timerInterval);
+}
+
+function sendResultsToEmail() {
+const btn = document.getElementById('sendEmailBtn');
+const status = document.getElementById('emailStatus');
+btn.disabled = true;
+btn.textContent = currentLang === 'ar' ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+const name = document.getElementById('studentName').value || 'N/A';
+const studentClass = document.getElementById('studentClass').value || 'N/A';
+const date = document.getElementById('examDate').value || new Date().toLocaleDateString();
+const score = document.getElementById('res-total').textContent;
+const successRate = document.getElementById('success-percent').textContent;
+const badge = document.getElementById('success-badge').textContent;
+let questionsHTML = '';
+let globalIdx = 0;
+examData.sections.forEach((section, sectionIdx) => {
+questionsHTML += `<tr style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">
+<td colspan="5" style="padding: 12px; font-weight: bold; font-size: 14px;">
+📌 ${currentLang === 'ar' ? 'القسم' : 'Section'} ${sectionIdx + 1}: ${section.title[currentLang]}
+</td></tr>`;
+section.questions.forEach((q) => {
+const selected = document.querySelector(`input[name="q${globalIdx}"]:checked`);
+const selectedValue = selected ? selected.value : null;
+const correctValue = correctAnswersMap[globalIdx];
+const isCorrect = selectedValue === correctValue;
+let studentAnswerText = currentLang === 'ar' ? '❌ لم يجب' : '❌ No answer';
+let studentAnswerColor = '#dc2626';
+if (selectedValue) {
+const selectedIndex = selectedValue.charCodeAt(0) - 97;
+studentAnswerText = q.options[selectedIndex][currentLang];
+studentAnswerColor = isCorrect ? '#059669' : '#dc2626';
+}
+const correctAnswerText = q.options[q.correct][currentLang];
+const rowBg = isCorrect ? '#f0fdf4' : '#fef2f2';
+const borderLeft = isCorrect ? '4px solid #10b981' : '4px solid #ef4444';
+questionsHTML += `<tr style="background: ${rowBg}; border-right: ${borderLeft};">
+<td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold; vertical-align: top; width: 35px;">${globalIdx + 1}</td>
+<td style="padding: 10px; border: 1px solid #e5e7eb; vertical-align: top; width: 35%;">
+<strong style="color: #5b21b6;">${currentLang === 'ar' ? '❓ السؤال:' : '❓ Question:'}</strong><br>
+<span style="color: #374151; font-size: 13px;">${q.q[currentLang]}</span>
+</td>
+<td style="padding: 10px; border: 1px solid #e5e7eb; vertical-align: top; width: 22%;">
+<strong style="color: ${studentAnswerColor};">${currentLang === 'ar' ? '✍️ إجابة الطالب:' : '✍️ Student Answer:'}</strong><br>
+<span style="color: ${studentAnswerColor}; font-size: 13px;">${studentAnswerText}</span>
+</td>
+<td style="padding: 10px; border: 1px solid #e5e7eb; vertical-align: top; width: 22%;">
+<strong style="color: #059669;">${currentLang === 'ar' ? '✅ الإجابة الصحيحة:' : '✅ Correct Answer:'}</strong><br>
+<span style="color: #059669; font-size: 13px;">${correctAnswerText}</span>
+</td>
+<td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; vertical-align: middle; width: 60px;">
+${isCorrect
+? '<span style="font-size: 24px;">✅</span><br><span style="color: #059669; font-weight: bold; font-size: 11px;">' + (currentLang === 'ar' ? 'صحيح' : 'Correct') + '</span>'
+: '<span style="font-size: 24px;">❌</span><br><span style="color: #dc2626; font-weight: bold; font-size: 11px;">' + (currentLang === 'ar' ? 'خطأ' : 'Wrong') + '</span>'}
+</td></tr>`;
+globalIdx++;
+});
+});
+const answersHTML = `
+<div style="font-family: 'Segoe UI', Tahoma, Arial, sans-serif; direction: ${currentLang === 'ar' ? 'rtl' : 'ltr'};">
+<div style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+<h2 style="margin: 0; font-size: 22px;">📐 ${currentLang === 'ar' ? 'نتيجة امتحان المراجعة الشامل' : 'Comprehensive Review Exam Result'}</h2>
+<p style="margin: 5px 0 0 0; opacity: 0.9;">${currentLang === 'ar' ? 'الصف الثاني عشر - متقدم (رياضيات)' : 'Grade 12 - Advanced (Mathematics)'}</p>
+</div>
+<div style="background: #f5f3ff; padding: 15px; border: 1px solid #ddd6fe;">
+<table style="width: 100%; border-collapse: collapse;">
+<tr>
+<td style="padding: 8px; font-weight: bold; color: #5b21b6;">${currentLang === 'ar' ? '😊 الاسم:' : '😊 Name:'}</td>
+<td style="padding: 8px;">${name}</td>
+<td style="padding: 8px; font-weight: bold; color: #5b21b6;">${currentLang === 'ar' ? '🏫 الشعبة:' : '🏫 Class:'}</td>
+<td style="padding: 8px;">${studentClass}</td>
+</tr>
+<tr>
+<td style="padding: 8px; font-weight: bold; color: #5b21b6;">${currentLang === 'ar' ? '📅 التاريخ:' : '📅 Date:'}</td>
+<td style="padding: 8px;">${date}</td>
+<td style="padding: 8px; font-weight: bold; color: #5b21b6;">${currentLang === 'ar' ? '🏆 التقدير:' : '🏆 Grade:'}</td>
+<td style="padding: 8px;">${badge}</td>
+</tr>
+</table>
+</div>
+<div style="background: white; padding: 20px; text-align: center; border-bottom: 2px solid #e5e7eb;">
+<div style="display: inline-block; margin: 0 15px;">
+<div style="font-size: 32px; font-weight: bold; color: #7c3aed;">${score}</div>
+<div style="color: #6b7280; font-size: 13px;">${currentLang === 'ar' ? 'الدرجة الكلية' : 'Total Score'}</div>
+</div>
+<div style="display: inline-block; margin: 0 15px;">
+<div style="font-size: 32px; font-weight: bold; color: #059669;">${successRate}%</div>
+<div style="color: #6b7280; font-size: 13px;">${currentLang === 'ar' ? 'نسبة النجاح' : 'Success Rate'}</div>
+</div>
+</div>
+<h3 style="background: #f3f4f6; padding: 12px; margin: 0; color: #1f2937; border-bottom: 2px solid #d1d5db;">
+📝 ${currentLang === 'ar' ? 'تفاصيل الأسئلة والإجابات الكاملة' : 'Full Questions & Answers Details'}
+</h3>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<thead>
+<tr style="background: #7c3aed; color: white;">
+<th style="padding: 10px; border: 1px solid #6d28d9; width: 35px;">#</th>
+<th style="padding: 10px; border: 1px solid #6d28d9; width: 35%;">${currentLang === 'ar' ? 'السؤال' : 'Question'}</th>
+<th style="padding: 10px; border: 1px solid #6d28d9; width: 22%;">${currentLang === 'ar' ? 'إجابة الطالب' : 'Student Answer'}</th>
+<th style="padding: 10px; border: 1px solid #6d28d9; width: 22%;">${currentLang === 'ar' ? 'الإجابة الصحيحة' : 'Correct Answer'}</th>
+<th style="padding: 10px; border: 1px solid #6d28d9; width: 60px;">${currentLang === 'ar' ? 'النتيجة' : 'Result'}</th>
+</tr>
+</thead>
+<tbody>${questionsHTML}</tbody>
+</table>
+<div style="background: linear-gradient(135deg, #f5f3ff, #ede9fe); padding: 15px; border-radius: 0 0 10px 10px; border-top: 2px solid #7c3aed;">
+<p style="margin: 0; color: #5b21b6; text-align: center; font-size: 13px;">
+📐 <strong>${currentLang === 'ar' ? 'أحسنت يا بطل! استمر في إتقان الرياضيات!' : 'Great job, champion! Keep mastering Mathematics!'}</strong> 📐
+</p>
+<p style="margin: 5px 0 0 0; color: #5b21b6; text-align: center; font-size: 12px;">
+${currentLang === 'ar' ? 'تم إرسال هذا التقرير تلقائياً | Mr. Mohammed Hesham' : 'This report was automatically sent | Mr. Mohammed Hesham'}
+</p>
+</div>
+</div>`;
+emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+to_email: TARGET_EMAIL,
+student_name: name,
+student_class: studentClass,
+exam_date: date,
+total_score: score,
+success_rate: successRate,
+grade: badge,
+answers_table: answersHTML
+}).then(() => {
+status.textContent = currentLang === 'ar' ? '✅ تم إرسال نتيجتك للمعلم!' : '✅ Your result was sent to the teacher!';
+status.style.color = '#059669';
+btn.textContent = currentLang === 'ar' ? '✓ تم الإرسال' : '✓ Sent';
+}).catch(err => {
+status.textContent = currentLang === 'ar' ? '❌ حدث خطأ، حاول مرة أخرى' : '❌ Something went wrong, try again';
+status.style.color = '#dc2626';
+btn.disabled = false;
+btn.textContent = currentLang === 'ar' ? '📧 حاول مرة أخرى' : '📧 Try Again';
+console.error('EmailJS Error:', err);
+});
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+const savedState = loadState();
+if (savedState && savedState.seed) {
+currentSeed = savedState.seed;
+currentLang = savedState.lang || 'ar';
+timeRemaining = savedState.timeRemaining !== undefined ? savedState.timeRemaining : TOTAL_TIME;
+answersVisible = savedState.answersVisible || false;
+document.documentElement.lang = currentLang;
+document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+document.getElementById('btn-ar').classList.toggle('active', currentLang === 'ar');
+document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+document.body.classList.toggle('en-mode', currentLang === 'en');
+document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+el.innerHTML = currentLang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+});
+} else {
+currentSeed = Date.now();
+}
+prepareShuffledExam();
+renderExam();
+if (savedState) {
+if (savedState.studentName) document.getElementById('studentName').value = savedState.studentName;
+if (savedState.studentClass) document.getElementById('studentClass').value = savedState.studentClass;
+if (savedState.examDate) document.getElementById('examDate').value = savedState.examDate;
+if (savedState.answers) restoreAnswers(savedState.answers);
+}
+setupAnswerListeners();
+setupInputListeners();
+startTimer();
+});
+
+window.addEventListener('beforeunload', () => saveState(false));
+</script>
+</body>
+</html>
